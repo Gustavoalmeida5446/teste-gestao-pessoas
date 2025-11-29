@@ -1,6 +1,8 @@
 const form = document.getElementById("form");
 const resultContainer = document.getElementById("result");
 
+const API_URL = "../src/api/controller.php";
+
 function render(entries) {
   resultContainer.innerHTML = "";
 
@@ -35,7 +37,7 @@ function render(entries) {
       const confirmDelete = confirm("Excluir registro?");
       if (!confirmDelete) return;
 
-      await fetch("delete_entry.php?id=" + entry.id);
+      await fetch(`${API_URL}?delete=1&id=${entry.id}`);
       loadEntries();
     };
 
@@ -44,7 +46,7 @@ function render(entries) {
 }
 
 async function loadEntries() {
-  const response = await fetch("get_entries.php");
+  const response = await fetch(`${API_URL}?list=1`);
   const entries = await response.json();
   render(entries);
 }
@@ -55,7 +57,7 @@ form.onsubmit = async (event) => {
   const formData = new FormData(form);
   const entryId = document.getElementById("id").value;
 
-  const endpoint = entryId ? "update_entry.php" : "create_entry.php";
+  const endpoint = entryId ? `${API_URL}?update=1` : `${API_URL}?create=1`;
 
   await fetch(endpoint, {
     method: "POST",
@@ -63,6 +65,7 @@ form.onsubmit = async (event) => {
   });
 
   form.reset();
+  document.getElementById("id").value = "";
   document.getElementById("buttonSave").textContent = "Cadastrar";
 
   loadEntries();
