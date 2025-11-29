@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gestão de Pessoas</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Gestão de Pessoas</h1>
+
+    <form id="form">
+      <input type="hidden" id="id" name="id" />
+
+      <input type="text" id="nome" name="name" placeholder="Nome" required />
+      <input type="text" id="cpf" name="cpf" placeholder="CPF" required />
+      <input type="number" id="idade" name="age" placeholder="Idade" required />
+
+      <button type="submit" id="buttonSave">Cadastrar</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
