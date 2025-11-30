@@ -18,3 +18,11 @@ Como rodar o projeto:
 
 4. Para abrir o sistema:
    http://localhost/teste-gestao-pessoas/public/
+
+# Preview
+
+<div align="center">
+  <br>
+  <img height="400" alt="2025-11-30_15-28" src="https://github.com/user-attachments/assets/5ec05d7a-2def-402e-b50e-3d5a3c4294dd" />
+  &nbsp; &nbsp; <img height="400" alt="localhost_teste-gestao-pessoas_public_(iPhone SE)" src="https://github.com/user-attachments/assets/f33a2b6c-0ef9-4879-a0dc-8a684bf27ce0" />
+</div>
