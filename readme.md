@@ -1,28 +1,26 @@
-# Gestão de Pessoas
+# Sistema de Gestão de Pessoas
 
-Como rodar o projeto:
+## Como rodar o projeto
 
-1. Clone ou extraia este repositório dentro da pasta raiz do seu servidor PHP local.
-   ex.: C:\xampp\htdocs\gestao-pessoas
+1. Clone ou extraia este repositório dentro da pasta raiz do seu servidor PHP local.<br>
+   Exemplo: `C:\xampp\htdocs\teste-gestao-pessoas`
 
-2. Na raiz do projeto, crie um arquivo chamado `.env` e configure seu banco de dados (copie o modelo do arquivo .env.example).
+3. Na raiz do projeto, renomeie o arquivo `.env.example` para `.env`.<br>
+   Abra este arquivo e coloque as configurações do seu MySQL (usuário e senha) caso seja necessário.
 
-   Exemplo de conteúdo do .env:
-   DB_HOST=localhost
-   DB_NAME=db_gestao
-   DB_USER=root
-   DB_PASS=
+4. Para criar o banco de dados e as tabelas automaticamente, acesse:<br>
+   [http://localhost/teste-gestao-pessoas/public/setup.php](http://localhost/teste-gestao-pessoas/public/setup.php)
 
-3. Para criar o banco de dados e a tabela automaticamente, acesse no navegador:
-   http://localhost/teste-gestao-pessoas/public/setup.php
+5. O sistema estará rodando em:<br>
+   [http://localhost/teste-gestao-pessoas/public/](http://localhost/teste-gestao-pessoas/public/)
 
-4. Para abrir o sistema:
-   http://localhost/teste-gestao-pessoas/public/
+---
 
-# Preview
+### Preview do Projeto
 
 <div align="center">
   <br>
-  <img height="400" alt="2025-11-30_15-28" src="https://github.com/user-attachments/assets/5ec05d7a-2def-402e-b50e-3d5a3c4294dd" />
-  &nbsp; &nbsp; <img height="400" alt="localhost_teste-gestao-pessoas_public_(iPhone SE)" src="https://github.com/user-attachments/assets/f33a2b6c-0ef9-4879-a0dc-8a684bf27ce0" />
+  <img height="400" alt="Preview Desktop" src="https://github.com/user-attachments/assets/5ec05d7a-2def-402e-b50e-3d5a3c4294dd" />
+  &nbsp; &nbsp;
+  <img height="400" alt="Preview Mobile" src="https://github.com/user-attachments/assets/f33a2b6c-0ef9-4879-a0dc-8a684bf27ce0" />
 </div>
