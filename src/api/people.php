@@ -23,9 +23,18 @@ if ($method === 'POST') {
     $name = $_POST['name'];
     $cpf = $_POST['cpf'];
     $age = $_POST['age'];
-    
+    $address = $_POST['endereco']; 
+
     $pdo->prepare("INSERT INTO pessoas (nome, cpf, idade) VALUES (?, ?, ?)")
         ->execute([$name, $cpf, $age]);
+    
+    $id = $pdo->lastInsertId();
+
+    if (!empty($address)) {
+        $sql = "INSERT INTO enderecos (pessoa_id, endereco) VALUES (?, ?)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$id, $address]);
+    }
     
     echo json_encode(['ok' => true]);
     exit;
@@ -38,10 +47,26 @@ if ($method === 'PUT') {
     $name = $data['name'];
     $cpf = $data['cpf'];
     $age = $data['age'];
+    $address = $data['endereco'];
     
     $pdo->prepare("UPDATE pessoas SET nome = ?, cpf = ?, idade = ? WHERE id = ?")
         ->execute([$name, $cpf, $age, $id]);
+
+    $sql = "SELECT id FROM enderecos WHERE pessoa_id = ?";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$id]);
+    $exists = $stmt->fetch();
     
+    if ($exists) {
+        $sql = "UPDATE enderecos SET endereco = ? WHERE pessoa_id = ?";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$address, $id]);
+    } else {
+        $sql = "INSERT INTO enderecos (pessoa_id, endereco) VALUES (?, ?)";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([$id, $address]);
+    }
+        
     echo json_encode(['ok' => true]);
     exit;
 }
