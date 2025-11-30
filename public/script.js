@@ -11,6 +11,7 @@ function showPeople(people) {
   people.forEach((person) => {
     const div = document.createElement("div");
     div.className = "item";
+    const formattedDate = person.data_criacao.split("-").reverse().join("/");
     div.innerHTML = `
       <div class="card-content">
           <div class="card-header">
@@ -27,6 +28,11 @@ function showPeople(people) {
               <div class="data-group">
                   <span class="data-label">Idade</span>
                   <span class="data-value">${person.idade} anos</span>
+              </div>
+
+              <div class="data-group">
+                  <span class="data-label">Data</span>
+                  <span class="data-value">${formattedDate}</span>
               </div>
 
               <div class="data-group full-width">
