@@ -12,13 +12,41 @@ function showPeople(people) {
     const div = document.createElement("div");
     div.className = "item";
     div.innerHTML = `
-      ID: ${person.id}<br>
-      Nome: ${person.nome}<br>
-      CPF: ${person.cpf}<br>
-      Idade: ${person.idade}<br>
-      <span id="addr-${person.id}">...</span><br>
-      <button class="edit-button">Editar</button>
-      <button class="del-button">Excluir</button>
+      <div class="card-content">
+          <div class="card-header">
+              <span class="card-name">${person.nome}</span>
+              <span class="card-id">ID #${person.id}</span>
+          </div>
+
+          <div class="card-grid">
+              <div class="data-group">
+                  <span class="data-label">CPF</span>
+                  <span class="data-value">${person.cpf}</span>
+              </div>
+              
+              <div class="data-group">
+                  <span class="data-label">Idade</span>
+                  <span class="data-value">${person.idade} anos</span>
+              </div>
+
+              <div class="data-group full-width">
+                  <span class="data-label">Endereço</span>
+                  <span class="data-value address" id="addr-${person.id}">
+                    Carregando...
+                  </span>
+              </div>
+          </div>
+      </div>
+
+      <div class="card-actions">
+          <button class="edit-button" title="Editar">
+            <span class="material-symbols-outlined">edit</span>
+          </button>
+          
+          <button class="delete-button" title="Excluir">
+            <span class="material-symbols-outlined">delete</span>
+          </button>
+      </div>
     `;
 
     showAddress(person.id);
@@ -36,7 +64,7 @@ function showPeople(people) {
       document.getElementById("buttonSave").textContent = "Atualizar";
     };
 
-    div.querySelector(".del-button").onclick = async () => {
+    div.querySelector(".delete-button").onclick = async () => {
       if (!confirm("Excluir?")) return;
       await fetch(`${API_PEOPLE}?id=${person.id}`, { method: "DELETE" });
       loadPeople();
