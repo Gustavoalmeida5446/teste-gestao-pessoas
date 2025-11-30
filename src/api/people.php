@@ -7,8 +7,14 @@ require_once __DIR__ . '/../config/connector.php';
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
-    $result = $pdo->query("SELECT * FROM pessoas ORDER BY id DESC");
-    $people = $result->fetchAll(PDO::FETCH_ASSOC);
+    $sql = "SELECT pessoas.*, enderecos.endereco 
+            FROM pessoas 
+            LEFT JOIN enderecos ON pessoas.id = enderecos.pessoa_id 
+            ORDER BY pessoas.id DESC";
+            
+    $stmt = $pdo->query($sql);
+    $people = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
     echo json_encode($people);
     exit;
 }

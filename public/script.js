@@ -12,6 +12,7 @@ function showPeople(people) {
     const div = document.createElement("div");
     div.className = "item";
     const formattedDate = person.data_criacao.split("-").reverse().join("/");
+    const addressText = person.endereco ? person.endereco : "Sem endereço";
     div.innerHTML = `
       <div class="card-content">
           <div class="card-header">
@@ -35,10 +36,10 @@ function showPeople(people) {
                   <span class="data-value">${formattedDate}</span>
               </div>
 
-              <div class="data-group full-width">
+            <div class="data-group full-width">
                   <span class="data-label">Endereço</span>
-                  <span class="data-value address" id="addr-${person.id}">
-                    Carregando...
+                  <span class="data-value address">
+                    ${addressText}
                   </span>
               </div>
           </div>
@@ -54,8 +55,6 @@ function showPeople(people) {
           </button>
       </div>
     `;
-
-    showAddress(person.id);
 
     div.querySelector(".edit-button").onclick = async () => {
       editingId = person.id;
@@ -78,19 +77,6 @@ function showPeople(people) {
 
     result.appendChild(div);
   });
-}
-
-async function showAddress(personId) {
-  const res = await fetch(`${API_ADDRESSES}?person_id=${personId}`);
-  const addr = await res.json();
-
-  const span = document.getElementById(`addr-${personId}`);
-
-  if (addr) {
-    span.innerHTML = `Endereço: ${addr.endereco}`;
-  } else {
-    span.innerHTML = "Sem endereço";
-  }
 }
 
 async function loadPeople() {
