@@ -1,7 +1,6 @@
 const form = document.getElementById("form");
 const result = document.getElementById("result");
 const API_PEOPLE = "api/pessoas";
-const API_ADDRESSES = "api/enderecos";
 
 let editingId = null;
 
@@ -11,8 +10,10 @@ function showPeople(people) {
   people.forEach((person) => {
     const div = document.createElement("div");
     div.className = "item";
+
     const formattedDate = person.data_criacao.split("-").reverse().join("/");
     const addressText = person.endereco ? person.endereco : "Sem endereço";
+
     div.innerHTML = `
       <div class="card-content">
           <div class="card-header">
@@ -56,17 +57,17 @@ function showPeople(people) {
       </div>
     `;
 
-    div.querySelector(".edit-button").onclick = async () => {
+    div.querySelector(".edit-button").onclick = () => {
       editingId = person.id;
+
       document.getElementById("nome").value = person.nome;
       document.getElementById("cpf").value = person.cpf;
       document.getElementById("idade").value = person.idade;
+      document.getElementById("endereco").value = person.endereco || "";
 
-      const res = await fetch(`${API_ADDRESSES}?person_id=${person.id}`);
-      const addr = await res.json();
-
-      document.getElementById("endereco").value = addr ? addr.endereco : "";
       document.getElementById("buttonSave").textContent = "Atualizar";
+
+      window.scrollTo(0, 0);
     };
 
     div.querySelector(".delete-button").onclick = async () => {
@@ -91,36 +92,21 @@ form.onsubmit = async (e) => {
   const name = document.getElementById("nome").value;
   const cpf = document.getElementById("cpf").value;
   const age = document.getElementById("idade").value;
-  const addr = document.getElementById("endereco").value;
+  const address = document.getElementById("endereco").value;
 
   if (editingId) {
-    const data = `name=${name}&cpf=${cpf}&age=${age}`;
+    const data = `name=${name}&cpf=${cpf}&age=${age}&endereco=${address}`;
+
     await fetch(`${API_PEOPLE}?id=${editingId}`, {
       method: "PUT",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: data,
-    });
-
-    const addrData = `address=${addr}`;
-    await fetch(`${API_ADDRESSES}?person_id=${editingId}`, {
-      method: "PUT",
-      body: addrData,
     });
 
     editingId = null;
   } else {
     const formData = new FormData(form);
     await fetch(API_PEOPLE, { method: "POST", body: formData });
-
-    const res = await fetch(API_PEOPLE);
-    const people = await res.json();
-    const newId = people[0].id;
-
-    if (addr.trim() !== "") {
-      const addrData = new FormData();
-      addrData.append("person_id", newId);
-      addrData.append("address", addr);
-      await fetch(API_ADDRESSES, { method: "POST", body: addrData });
-    }
   }
 
   form.reset();

@@ -2,6 +2,3 @@ RewriteEngine On
 
 RewriteRule ^api/pessoas/?$ ../src/api/people.php [L,QSA]
 RewriteRule ^api/pessoas/([0-9]+)/?$ ../src/api/people.php?id=$1 [L,QSA]
-
-RewriteRule ^api/enderecos/?$ ../src/api/addresses.php [L,QSA]
-RewriteRule ^api/enderecos/([0-9]+)/?$ ../src/api/addresses.php?person_id=$1 [L,QSA]
