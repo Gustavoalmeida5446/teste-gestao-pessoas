@@ -19,7 +19,17 @@ try {
         )
     ");
 
-    echo "Sucesso! Banco de dados e tabela criados.";
+    $pdo->exec("
+        CREATE TABLE IF NOT EXISTS enderecos (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            pessoa_id INT NOT NULL,
+            endereco TEXT,
+            data_criacao DATE DEFAULT (CURRENT_DATE),
+            FOREIGN KEY (pessoa_id) REFERENCES pessoas(id) ON DELETE CASCADE
+        )
+    ");
+
+    echo "Sucesso! Banco de dados e tabelas criados.";
 
 } catch (PDOException $e) {
     echo "Erro: " . $e->getMessage();

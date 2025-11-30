@@ -1,11 +1,12 @@
 const form = document.getElementById("form");
-const resultContainer = document.getElementById("result");
-const API_URL = "/teste-gestao-pessoas/api/pessoas";
+const result = document.getElementById("result");
+const API_PEOPLE = "../src/api/controller.php";
+const API_ADDRESSES = "../src/api/addresses.php";
 
 let editingId = null;
 
-function render(people) {
-  resultContainer.innerHTML = "";
+function showPeople(people) {
+  result.innerHTML = "";
 
   people.forEach((person) => {
     const div = document.createElement("div");
@@ -15,58 +16,96 @@ function render(people) {
       Nome: ${person.nome}<br>
       CPF: ${person.cpf}<br>
       Idade: ${person.idade}<br>
-      Data: ${person.data_criacao}<br>
+      <span id="addr-${person.id}">...</span><br>
       <button class="edit-button">Editar</button>
-      <button class="delete-button">Excluir</button>
+      <button class="del-button">Excluir</button>
     `;
 
-    div.querySelector(".edit-button").onclick = () => {
+    showAddress(person.id);
+
+    div.querySelector(".edit-button").onclick = async () => {
       editingId = person.id;
       document.getElementById("nome").value = person.nome;
       document.getElementById("cpf").value = person.cpf;
       document.getElementById("idade").value = person.idade;
+
+      const res = await fetch(`${API_ADDRESSES}?person_id=${person.id}`);
+      const addr = await res.json();
+
+      document.getElementById("endereco").value = addr ? addr.endereco : "";
       document.getElementById("buttonSave").textContent = "Atualizar";
     };
 
-    div.querySelector(".delete-button").onclick = async () => {
+    div.querySelector(".del-button").onclick = async () => {
       if (!confirm("Excluir?")) return;
-
-      await fetch(`${API_URL}/${person.id}`, { method: "DELETE" });
-      loadData();
+      await fetch(`${API_PEOPLE}?id=${person.id}`, { method: "DELETE" });
+      loadPeople();
     };
 
-    resultContainer.appendChild(div);
+    result.appendChild(div);
   });
 }
 
-async function loadData() {
-  const response = await fetch(API_URL);
-  const people = await response.json();
-  render(people);
+async function showAddress(personId) {
+  const res = await fetch(`${API_ADDRESSES}?person_id=${personId}`);
+  const addr = await res.json();
+
+  const span = document.getElementById(`addr-${personId}`);
+
+  if (addr) {
+    span.innerHTML = `Endereço: ${addr.endereco}`;
+  } else {
+    span.innerHTML = "Sem endereço";
+  }
 }
 
-form.onsubmit = async (event) => {
-  event.preventDefault();
+async function loadPeople() {
+  const res = await fetch(API_PEOPLE);
+  const people = await res.json();
+  showPeople(people);
+}
+
+form.onsubmit = async (e) => {
+  e.preventDefault();
 
   const name = document.getElementById("nome").value;
   const cpf = document.getElementById("cpf").value;
   const age = document.getElementById("idade").value;
+  const addr = document.getElementById("endereco").value;
 
   if (editingId) {
     const data = `name=${name}&cpf=${cpf}&age=${age}`;
-    await fetch(`${API_URL}/${editingId}`, {
+    await fetch(`${API_PEOPLE}?id=${editingId}`, {
       method: "PUT",
       body: data,
     });
+
+    const addrData = `address=${addr}`;
+    await fetch(`${API_ADDRESSES}?person_id=${editingId}`, {
+      method: "PUT",
+      body: addrData,
+    });
+
     editingId = null;
   } else {
     const formData = new FormData(form);
-    await fetch(API_URL, { method: "POST", body: formData });
+    await fetch(API_PEOPLE, { method: "POST", body: formData });
+
+    const res = await fetch(API_PEOPLE);
+    const people = await res.json();
+    const newId = people[0].id;
+
+    if (addr.trim() !== "") {
+      const addrData = new FormData();
+      addrData.append("person_id", newId);
+      addrData.append("address", addr);
+      await fetch(API_ADDRESSES, { method: "POST", body: addrData });
+    }
   }
 
   form.reset();
   document.getElementById("buttonSave").textContent = "Cadastrar";
-  loadData();
+  loadPeople();
 };
 
-document.addEventListener("DOMContentLoaded", loadData);
+document.addEventListener("DOMContentLoaded", loadPeople);
