@@ -1,7 +1,7 @@
 const form = document.getElementById("form");
 const result = document.getElementById("result");
-const API_PEOPLE = "../src/api/controller.php";
-const API_ADDRESSES = "../src/api/addresses.php";
+const API_PEOPLE = "api/pessoas";
+const API_ADDRESSES = "api/enderecos";
 
 let editingId = null;
 
