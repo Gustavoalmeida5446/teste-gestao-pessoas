@@ -1,48 +1,52 @@
 <?php
+header('Access-Control-Allow-Origin: *');
+header('Content-Type: application/json');
 
-require dirname(__DIR__) . '/config/connector.php';
+require_once __DIR__ . '/../config/connector.php';
 
-header("Content-Type: application/json");
+$method = $_SERVER['REQUEST_METHOD'];
 
-if (isset($_GET["create"])) {
-    $nome  = $_POST["name"];
-    $cpf   = $_POST["cpf"];
-    $idade = $_POST["age"];
-
-    $stmt = $pdo->prepare("INSERT INTO pessoas (nome, cpf, idade) VALUES (?, ?, ?)");
-    $stmt->execute([$nome, $cpf, $idade]);
-
-    echo "OK";
+if ($method === 'GET') {
+    $result = $pdo->query("SELECT * FROM pessoas ORDER BY id DESC");
+    $people = $result->fetchAll(PDO::FETCH_ASSOC);
+    echo json_encode($people);
     exit;
 }
 
-if (isset($_GET["delete"])) {
-    $id = $_GET["id"];
-
-    $stmt = $pdo->prepare("DELETE FROM pessoas WHERE id = ?");
-    $stmt->execute([$id]);
-
-    echo "OK";
+if ($method === 'POST') {
+    $name = $_POST['name'];
+    $cpf = $_POST['cpf'];
+    $age = $_POST['age'];
+    
+    $pdo->prepare("INSERT INTO pessoas (nome, cpf, idade) VALUES (?, ?, ?)")
+        ->execute([$name, $cpf, $age]);
+    
+    echo json_encode(['ok' => true]);
     exit;
 }
 
-if (isset($_GET["list"])) {
-    $stmt = $pdo->query("SELECT * FROM pessoas ORDER BY id DESC");
-    $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    echo json_encode($dados);
+if ($method === 'PUT') {
+    parse_str(file_get_contents('php://input'), $data);
+    
+    $id = $_GET['id']; 
+    $name = $data['name'];
+    $cpf = $data['cpf'];
+    $age = $data['age'];
+    
+    $pdo->prepare("UPDATE pessoas SET nome = ?, cpf = ?, idade = ? WHERE id = ?")
+        ->execute([$name, $cpf, $age, $id]);
+    
+    echo json_encode(['ok' => true]);
     exit;
 }
 
-if (isset($_GET["update"])) {
-    $id= $_POST["id"];
-    $nome  = $_POST["name"];
-    $cpf   = $_POST["cpf"];
-    $idade = $_POST["age"];
-
-    $stmt = $pdo->prepare("UPDATE pessoas SET nome = ?, cpf = ?, idade = ? WHERE id = ?");
-    $stmt->execute([$nome, $cpf, $idade, $id]);
-
-    echo "OK";
+if ($method === 'DELETE') {
+    $id = $_GET['id'];
+    
+    $pdo->prepare("DELETE FROM pessoas WHERE id = ?")
+        ->execute([$id]);
+    
+    echo json_encode(['ok' => true]);
     exit;
 }
+?>
